@@ -92,11 +92,32 @@ if uu:
     mlt.figure(figsize=(15, 8))
     sns.heatmap(corr, annot=True)
     st.pyplot()
+
+kn=KNeighborsClassifier(n_neighbors=1)
+kn.fit(x_train,y_train)
+y_kn=kn.predict(x_test)
+
 st.header('Model Reports')
 click_mo=st.button(label="click to generate model reports")
 if click_mo:
     model1=pd.read_csv('model_report.csv')
     st.dataframe(model1)
+
+
+def auc_roc(y):
+  fpr,tpr,treshold=roc_curve(y_test,y)
+  auc_kn=auc(fpr,tpr)
+  mlt.figure()
+  mlt.plot(fpr,tpr,color='darkorange',lw=2,label='Roc curve(area=%.2f)'%auc_kn)
+  mlt.plot([0,1],[0,1],color='navy',lw=2)
+  mlt.xlim([0.0,1.0])
+  mlt.ylim([0.0,1.05])
+  mlt.title('roc curve')
+  mlt.ylabel('true positibe rate')
+  mlt.xlabel('false positive rate')
+  mlt.legend(loc='lower right')
+st.selectbox(label='roc curve and auc',options=['knneighbors','multinomialNB','guassianNB','decision tree','random forest','xgbclassifier','xgbrfclassifier'])
+
 st.write('**Ovservations**')
 st.write('-As so for the model didt achive any vital progress in higher accuracy prediction.experimeted with knneighbors,multinomialNB,guassianNB,decision tree,random forest,xgbrfclassifier,xgbclassifier but none of them giving goos accuracy.however we have to take the model with higher recall accuracy')
 st.write('xgbclassifier gives better recall accuracy so its our best model')
